@@ -1,2 +1,2 @@
 # dwarf-ip
-GUI to searcg 
+GUI application to search for addresses and IP addresses 🔎
