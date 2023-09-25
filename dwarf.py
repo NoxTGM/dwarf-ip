@@ -79,22 +79,23 @@ class App(customtkinter.CTk):
     def address_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text='Enter an address:', title='Search by address')
         self.map_widget.set_address(dialog.get_input())
-        print(f'Address to be searched: {dialog.get_input()}')
 
     def ip_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text='Enter an IP address:', title='Search by IP')
         self.search_by_ip(dialog.get_input())
-        print(f'IP to be searched: {str(dialog.get_input())}')
 
     def search_by_ip(self, ip_address: str):
-        request_url = 'https://geolocation-db.com/jsonp/' + ip_address
-        response = requests.get(request_url)
-        output = response.content.decode()
-        output = output.split('(')[1].strip(')')
-        output  = json.loads(output)
-        self.map_widget.set_position(output['latitude'], output['longitude'])
-        self.map_widget.set_zoom(15)
-        print(output)
+        if ip_address == '1.1.1.1':
+            print('IP address cannot be computed.')
+        else:
+            request_url = 'https://geolocation-db.com/jsonp/' + ip_address
+            response = requests.get(request_url)
+            output = response.content.decode()
+            output = output.split('(')[1].strip(')')
+            output  = json.loads(output)
+            self.map_widget.set_position(output['latitude'], output['longitude'])
+            self.map_widget.set_zoom(15)
+            print(output)
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
