@@ -93,7 +93,7 @@ class App(customtkinter.CTk):
             output = response.content.decode()
             output = output.split('(')[1].strip(')')
             output  = json.loads(output)
-            self.map_widget.set_position(output['latitude'], output['longitude'])
+            self.map_widget.set_position(output['latitude'], output['longitude']) # TODO: some IP aren't working, requests.exceptions.ConnectionError: ('Connection aborted.', OSError(0, 'Error'))
             self.map_widget.set_zoom(15)
             print(output)
 
