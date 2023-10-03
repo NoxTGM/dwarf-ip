@@ -37,19 +37,19 @@ class App(customtkinter.CTk):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky='n')
 
         ## Address
-        self.string_input_button = customtkinter.CTkButton(self.sidebar_frame, text='Search by address', command=self.address_dialog_event)
+        self.string_input_button = customtkinter.CTkButton(self.sidebar_frame, text='Search by address', command=self.search_by_address)
         self.string_input_button.grid(row=1, column=0, padx=20, pady=10, sticky='n')
 
         ## IP
-        self.string_input_button = customtkinter.CTkButton(self.sidebar_frame, text='Search by IP', command=self.ip_dialog_event)
+        self.string_input_button = customtkinter.CTkButton(self.sidebar_frame, text='Search by IP', command=self.search_by_ip)
         self.string_input_button.grid(row=2, column=0, padx=20, pady=10, sticky='n')
 
         ## Appearance
-        self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=['Light', 'Dark', 'System'], command=self.change_appearance_mode_event)
+        self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=['Light', 'Dark', 'System'], command=self.change_appearance_mode)
         self.appearance_mode_optionemenu.grid(row=3, column=0, padx=20, pady=10, sticky='s')
 
         ## Scaling
-        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=['80%', '90%', '100%', '110%', '120%'], command=self.change_scaling_event)
+        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=['80%', '90%', '100%', '110%', '120%'], command=self.change_scaling)
         self.scaling_optionemenu.grid(row=4, column=0, padx=20, pady=(10,20), sticky='s')
 
         #endregion
@@ -76,31 +76,24 @@ class App(customtkinter.CTk):
 
         #endregion
     
-    def address_dialog_event(self):
+    def search_by_address(self):
         dialog = customtkinter.CTkInputDialog(text='Enter an address:', title='Search by address')
         self.map_widget.set_address(dialog.get_input())
 
-    def ip_dialog_event(self):
+    def search_by_ip(self):
         dialog = customtkinter.CTkInputDialog(text='Enter an IP address:', title='Search by IP')
-        self.search_by_ip(dialog.get_input())
+        request_url = 'https://geolocation-db.com/jsonp/' + dialog.get_input()
+        response = requests.get(request_url)
+        output = response.content.decode()
+        output = output.split('(')[1].strip(')')
+        output  = json.loads(output)
+        self.map_widget.set_position(output['latitude'], output['longitude']) # TODO: some IP aren't working, requests.exceptions.ConnectionError: ('Connection aborted.', OSError(0, 'Error'))
+        self.map_widget.set_zoom(15)
 
-    def search_by_ip(self, ip_address: str):
-        if ip_address == '1.1.1.1':
-            print('IP address cannot be computed.')
-        else:
-            request_url = 'https://geolocation-db.com/jsonp/' + ip_address
-            response = requests.get(request_url)
-            output = response.content.decode()
-            output = output.split('(')[1].strip(')')
-            output  = json.loads(output)
-            self.map_widget.set_position(output['latitude'], output['longitude']) # TODO: some IP aren't working, requests.exceptions.ConnectionError: ('Connection aborted.', OSError(0, 'Error'))
-            self.map_widget.set_zoom(15)
-            print(output)
-
-    def change_appearance_mode_event(self, new_appearance_mode: str):
+    def change_appearance_mode(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
-    def change_scaling_event(self, new_scaling: str):
+    def change_scaling(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace('%', '')) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
