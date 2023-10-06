@@ -5,8 +5,10 @@ A small educational project that utilisizes [TkinterMapView](https://github.com/
 
 * Install Python 3
 * Download `dwarf.py`
-* Download the `requirements.txt`
-* Run `dwarf.py`
+* Extract the files
+* Open a command prompt in the folder containing the files
+* Run `pip install -r requirements.txt`
+* Run `dwarf.py` using Python
 
 ## 🔑 License
 
